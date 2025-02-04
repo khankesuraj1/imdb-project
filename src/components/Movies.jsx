@@ -38,7 +38,7 @@ function Movies() {
    
        </div>
        <Pagination pageNumber={page} previousFn={handlePrevious} nextFn={handleNext}/>
-       </div>
+       </div> 
     )
 }
 
