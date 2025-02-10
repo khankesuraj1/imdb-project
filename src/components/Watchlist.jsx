@@ -1,8 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import genreids from "../utilities/genre.js"
 
-export default function Watchlist({watchlist}) {
+ function Watchlist({watchlist}) {
 
 const[search,setSeach]=useState("");
+const[genreList,setGenreList]=useState([]);
+const [currGenre , setCurrGenre] = useState('All Genres')
+
+useEffect(()=>{
+
+  let temp=watchlist.map((movieObj)=>{
+    return genreids[movieObj.genre_ids[0]]
+  })
+
+  temp=new Set(temp)
+  setGenreList(["All Genres",...temp])
+},[watchlist])
+
+function handleFilter(genre){
+  setCurrGenre(genre)
+}
+
+
 function handleSeach(e){
   setSeach(e.target.value)
   console.log(search)
@@ -10,8 +29,23 @@ function handleSeach(e){
 
   return (
     <>
+  <div className="flex justify-center m-4">
+        {genreList.map((genre) => {
+          return (
+            <div
+              onClick={() => handleFilter(genre)}
+              className={
+                currGenre == genre
+                  ? "mx-4 flex justify-center items-center bg-blue-400 h-[3rem] w-[9rem] text-white font-bold border rounded-xl"
+                  : "flex justify-center items-center h-[3rem] w-[9rem] bg-gray-400/50 rounded-xl text-white font-bold mx-4"
+              }
+            >
+              {genre}
+            </div>
+          );
+        })}
+      </div>
     <div className='flex justify-center my-10 w-full'>
-     {/*genre filter*/}
       
      <div>
       <input className='bg-gray-200 h-[3rem] w-[18rem] outline-none border border-slate-600' 
@@ -34,7 +68,15 @@ function handleSeach(e){
             </tr>
           </thead>
           <tbody>
-          {watchlist.map((movieObj)=>{
+          {watchlist.filter((movieObj)=>{
+              if(currGenre=='All Genres'){
+                return true
+              }else{
+                return genreids[movieObj.genre_ids[0]]==currGenre // Horror
+              }
+            }).filter((movieObj)=>{
+            return movieObj.title.toLowerCase().includes(search.toLowerCase())
+            }).map((movieObj)=>{
               return  <tr className="border-b-2">
             
               <td className="px-6 py-4 flex items-center space-x-4">
@@ -47,7 +89,7 @@ function handleSeach(e){
               </td>
               <td className="px-6 py-4 text-center">{movieObj.vote_average}</td>
               <td className="px-6 py-4 text-center">{movieObj.popularity}</td>
-              <td className="px-6 py-4 text-center">Action</td>
+              <td className="px-6 py-4 text-center">{genreids[movieObj.genre_ids[0]]}</td>
               <td className="px-6 py-4 text-center text-red-500 cursor-pointer">Delete</td>
             </tr>
         
@@ -60,3 +102,5 @@ function handleSeach(e){
     </>
     )
 } 
+
+export default Watchlist
