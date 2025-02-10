@@ -6,7 +6,6 @@ import Watchlist from "./components/Watchlist"
 import MovieRecommendations from "./components/MovieRecommendations"
 import Movies from "./components/Movies"
 import React, { useEffect, useState } from 'react'
-
 function App() {
   const[watchlist,setWatchlist]=useState([]);
 
